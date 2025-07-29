@@ -53,7 +53,7 @@ export const buyChocolate = async (request: Request, response: Response) => {
         .json(ResponseBuilder.notFound("Chocolate not found"));
     }
 
-    if (chocolate.quantity < buyQuantity) {
+    if (chocolate.dataValues.quantity < buyQuantity) {
       return response
         .status(400)
         .json(ResponseBuilder.error("Not enough stock available."));
