@@ -1,14 +1,8 @@
 import "./App.css";
-import Header from "./components/header";
-import VendoPage from "./components/VendoPage";
+import VendoPage from "./components/vendoPage";
 
 function App() {
-  return (
-    <>
-      <Header />
-      <VendoPage />
-    </>
-  );
+  return <VendoPage />;
 }
 
 export default App;
