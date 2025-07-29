@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { chocolateData } from "./vendoPage";
+import type { chocolateData } from "../screens/vendoPage";
 
 type VendoTableProps = {
   chocolates: chocolateData[];

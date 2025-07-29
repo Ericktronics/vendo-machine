@@ -52,7 +52,10 @@ export const updateUserBalance = async (
         .json(ResponseBuilder.notFound("User balance not found"));
     }
 
-    await balance.update({ cash });
+    const existingCash = parseFloat(`${balance.dataValues.cash}`);
+    const newCash = existingCash + cash;
+
+    await balance.update({ cash: newCash });
     await balance.save();
 
     return response

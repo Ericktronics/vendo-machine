@@ -23,22 +23,20 @@ export const getInvertory = async (
 };
 
 export const buyChocolate = async (request: Request, response: Response) => {
-  const { chocolateName, cash, quantity } = request.body;
+  const { id, quantity } = request.body;
 
   // Default quantity to 1 if not provided
   const buyQuantity = quantity ?? 1;
 
-  if (!chocolateName || cash === undefined) {
+  if (!id || isNaN(id) || id <= 0) {
     return response
       .status(400)
-      .json(
-        ResponseBuilder.badRequest("Chocolate name and cash are required.")
-      );
+      .json(ResponseBuilder.badRequest("Invalid chocolate ID provided."));
   }
 
   try {
     const chocolate = await db.Chocolate.findOne({
-      where: { name: chocolateName },
+      where: { id },
     });
 
     const balance = await db.UserBalance.findOne({ where: { id: 1 } });
@@ -63,13 +61,13 @@ export const buyChocolate = async (request: Request, response: Response) => {
 
     const totalPrice = Number(chocolate.dataValues.price) * buyQuantity;
 
-    if (cash < totalPrice) {
+    if (balance.dataValues.cash < totalPrice) {
       return response
         .status(400)
-        .json(ResponseBuilder.error("Insufficient cash."));
+        .json(ResponseBuilder.badRequest("Insufficient cash."));
     }
 
-    const change = cash - totalPrice;
+    const change = balance.dataValues.cash - totalPrice;
 
     // Update stock and user balance
     await chocolate.update({
@@ -86,7 +84,7 @@ export const buyChocolate = async (request: Request, response: Response) => {
 
     return response.status(200).json(
       ResponseBuilder.success({
-        message: `Dispensed ${buyQuantity} ${chocolateName}(s)`,
+        message: `Dispensed ${buyQuantity} ${chocolate.dataValues.name}(s)`,
         change: change.toFixed(2),
       })
     );
@@ -102,19 +100,17 @@ export const restockChocolate = async (
   request: Request,
   response: Response
 ) => {
-  const { chocolateName, quantity } = request.body;
+  const { id, quantity } = request.body;
 
-  if (!chocolateName || quantity === undefined) {
+  if (!id || quantity === undefined) {
     return response
       .status(400)
-      .json(
-        ResponseBuilder.badRequest("Chocolate name and quantity are required.")
-      );
+      .json(ResponseBuilder.badRequest("id name and quantity are required."));
   }
 
   try {
     const chocolate = await db.Chocolate.findOne({
-      where: { name: chocolateName },
+      where: { id },
     });
 
     if (!chocolate) {
@@ -130,7 +126,7 @@ export const restockChocolate = async (
 
     return response.json(
       ResponseBuilder.success(
-        `${chocolateName} restocked. New quantity: ${newQuantity}.`
+        `${chocolate.dataValues.name} restocked. New quantity: ${newQuantity}.`
       )
     );
   } catch (err) {

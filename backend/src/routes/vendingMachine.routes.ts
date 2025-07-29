@@ -8,7 +8,7 @@ import {
 const router = Router();
 
 router.get("/getInventory", getInvertory);
-router.post("/buyChocolate", buyChocolate);
-router.post("/restockChocolate", restockChocolate);
+router.patch("/buyChocolate", buyChocolate);
+router.patch("/restockChocolate", restockChocolate);
 
 export default router;

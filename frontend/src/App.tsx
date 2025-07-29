@@ -1,5 +1,5 @@
 import "./App.css";
-import VendoPage from "./components/vendoPage";
+import VendoPage from "./screens/vendoPage";
 
 function App() {
   return <VendoPage />;
